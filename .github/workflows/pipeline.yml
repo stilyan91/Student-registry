@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build Test Deploy
 
 on:
   push:
@@ -13,18 +13,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version}}
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version}}
+          node-version: 18.x
           cache: "npm"
       - name: Build the app
         run: npm install
@@ -32,6 +27,7 @@ jobs:
         run: npm test
 
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to production
